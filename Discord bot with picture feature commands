@@ -1,0 +1,90 @@
+import os
+import random
+import discord
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'We have logged in as Test bot!')
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Hi! I am a Test bot!')
+
+@bot.command()
+async def laugh(ctx, count_heh = 100):
+    await ctx.send("he" * count_heh)
+
+@bot.command()
+async def smile(ctx):
+    await ctx.send(f':D')
+
+@bot.command()
+async def repeat(ctx, times: int, content="Repeating on your command sir!"):
+    for i in range(times):
+        await ctx.send(content)
+
+@bot.group()
+async def cool(ctx):
+    """Says if a user is cool.
+
+    In reality this just checks if a subcommand is being invoked.
+    """
+    if ctx.invoked_subcommand is None:
+        await ctx.send(f'Nah, {ctx.subcommand_passed} is not cool')
+
+async def roll(ctx, dice: str):
+    """Rolls a dice in NdN format."""
+    try:
+        rolls, limit = map(int, dice.split('d'))
+    except Exception:
+        await ctx.send('Format has to be in NdN!')
+        return
+
+    result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
+    await ctx.send(result)
+
+link_scp =["scp1.jpg", "scp2.jpg", "scp3.jpg"]
+link_scp_dipilih = random.choice(link_scp)
+
+@bot.command()
+async def meme(ctx):
+    link_gambar = os.listdir('images')
+    link_yang_dipilih = random.choice(link_gambar)
+
+    with open(f'images/{link_yang_dipilih}', 'rb') as f:
+            # Mari simpan file perpustakaan/library Discord yang dikonversi dalam variabel ini!
+            picture = discord.File(f)
+        # Kita kemudian dapat mengirim file ini sebagai tolok ukur!
+            #print(picture)
+            await ctx.send(file=picture)
+
+import requests
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'#urlnya
+    res = requests.get(url) # dowload gambarnya
+    data = res.json() #read gambarnya
+    return data['url'] #print gambarnya
+
+
+@bot.command('duck') #$duck
+async def duck(ctx):
+    '''Setelah kita memanggil perintah bebek (duck), program akan memanggil fungsi get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
+@bot.command()
+async def scp(ctx):
+    with open(f'scp/{link_scp_dipilih}', 'rb') as f:
+        picture = discord.File(f)
+        await ctx.send(file=picture)
+
+with open("token.txt","r") as file:
+    token = file.read().strip()
+
+bot.run(token)
