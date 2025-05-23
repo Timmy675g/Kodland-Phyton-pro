@@ -1,0 +1,39 @@
+from flask import Flask
+import random
+
+app = Flask(__name__)
+
+facts_list = ["Elon Musk mengklaim bahwa jejaring sosial dirancang untuk membuat kita tetap berada di dalam platform, sehingga kita menghabiskan waktu sebanyak mungkin untuk melihat konten.", 
+            "Menurut sebuah penelitian yang dilakukan pada tahun 2018, lebih dari 50% orang berusia 18 hingga 34 tahun menganggap diri mereka ketergantungan pada ponsel pintar mereka.", 
+            "Jejaring sosial memiliki sisi positif dan negatif, dan kita harus menyadari keduanya saat menggunakan platform ini.", 
+            "Studi tentang kecanduan teknologi adalah salah satu bidang penelitian ilmiah modern yang paling relevan."]
+
+print(random.choice(facts_list))
+
+@app.route("/home") #Home Page
+def hello_world():
+     return f"<h1>Hello!</h1>"
+
+@app.route("/about") #Halaman About
+def about():
+    return "<h2>Shooter </h2>"
+
+@app.route("/contact") #Halaman Contact
+def contact():
+    return "<h1>Contact Us in 891837646737</h1>"
+
+@app.route("/secret")
+def secret():
+    return "<h1> Selamat! Anda telah menemukan halaman rahasia! </h1> <a href='/home'>Kembali ke home</a>"
+
+@app.route("/random-facts") #Halaman Random Facts
+def random_facts():
+    #Cara 1 :
+    #text = random.choice(facts_list)
+    #return text
+
+    #Cara 2 :
+    text = random.choice(facts_list)
+    return f"<h1>Ini adalah random facts nya : {text}</h1> <a href='/home'>Kembali ke home</a>"
+
+app.run(debug=True)
